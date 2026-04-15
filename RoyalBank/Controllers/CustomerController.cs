@@ -11,7 +11,6 @@ namespace RoyalBank.Controllers
         private readonly CustomerService  _customerService;
         private readonly KycService       _kycService;
         private readonly AccountService   _accountService;
-        //private readonly IUserRepository  _userRepo;
         private readonly IWebHostEnvironment _env;
 
         public CustomerController(CustomerService customerService, KycService kycService,
@@ -73,11 +72,6 @@ namespace RoyalBank.Controllers
                 ModelState.AddModelError("", "User not found");
                 return View(model);
 			}
-            //if (user == null) { ModelState.AddModelError("", "User not found."); return View(model); }
-
-            //user.Password     = model.Password;
-            //user.HashPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
-            //await _userRepo.UpdateAsync(user);
 
             TempData["Success"] = "Password set! Please login.";
             return RedirectToAction("Login", "Home");

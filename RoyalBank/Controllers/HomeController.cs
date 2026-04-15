@@ -46,25 +46,6 @@ namespace RoyalBank.Controllers
                 return View(model);
 			}
 
-
-			//if (user == null)
-			//{
-			//    ModelState.AddModelError("", "No account found with this email.");
-			//    return View(model);
-			//}
-
-			//if (string.IsNullOrEmpty(user.HashPassword))
-			//{
-			//    ModelState.AddModelError("", "Password not set yet. Please complete registration.");
-			//    return View(model);
-			//}
-
-			//if (!BCrypt.Net.BCrypt.Verify(model.Password, user.HashPassword))
-			//{
-			//    ModelState.AddModelError("", "Incorrect password. Please try again.");
-			//    return View(model);
-			//}
-
 			// Save login info in session
 			HttpContext.Session.SetInt32("UserId",     user.Id);
             HttpContext.Session.SetString("UserEmail", user.Username);

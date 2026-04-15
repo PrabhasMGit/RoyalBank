@@ -9,8 +9,6 @@ namespace RoyalBank.Controllers
     public class AdminController : Controller
     {
         private readonly AdminService _adminService;
-        //private readonly ICustomerRepository  _customerRepo;
-        //private readonly IComplianceRepository _complianceRepo;
         private readonly AccountService       _accountService;
         private readonly ComplianceService    _complianceService;
 
@@ -71,31 +69,6 @@ namespace RoyalBank.Controllers
                 return View(model);
             }
 
-			//if (await _userRepo.GetByUsernameAsync(model.Email) != null)
-			//{
-			//    ModelState.AddModelError("Email", "This email is already registered.");
-			//    return View(model);
-			//}
-
-			//await _userRepo.AddAsync(new User
-			//{
-			//    Username     = model.Email,
-			//    Password     = model.Password,
-			//    HashPassword = BCrypt.Net.BCrypt.HashPassword(model.Password),
-			//    Role         = model.Role,
-			//    CustomerId   = null
-			//});
-
-			//// Fix 3: Record officer creation in audit history (no CustomerId - system event)
-			//await _complianceRepo.AddAuditLogAsync(new AuditLog
-			//{
-			//    CustomerId = null,
-			//    Action     = $"{model.Role} Officer Created",
-			//    Status     = "CREATED",
-			//    Remarks    = $"Officer account created by Admin ({AdminEmail()}). Email: {model.Email}, Role: {model.Role}",
-			//    Timestamp  = DateTime.Now
-			//});
-
 			TempData["Success"] = $"{model.Role} Officer created successfully. Email: {model.Email}";
             return RedirectToAction("OfficersList");
         }
@@ -112,22 +85,6 @@ namespace RoyalBank.Controllers
         public async Task<IActionResult> DeleteOfficer(int id)
         {
             if (!IsAdmin()) return RedirectToAction("Login", "Home");
-
-            //var officer = await _userRepo.GetByIdAsync(id);
-            //string officerEmail = officer?.Username ?? $"ID:{id}";
-            //string officerRole  = officer?.Role.ToString() ?? "Officer";
-
-            //await _userRepo.DeleteAsync(id);
-
-            //// Record deletion in audit history
-            //await _complianceRepo.AddAuditLogAsync(new AuditLog
-            //{
-            //    CustomerId = null,
-            //    Action     = $"{officerRole} Officer Deleted",
-            //    Status     = "DELETED",
-            //    Remarks    = $"Officer {officerEmail} deleted by Admin ({AdminEmail()})",
-            //    Timestamp  = DateTime.Now
-            //});
 
             await _adminService.DeleteOfficer(id, AdminEmail());
 
@@ -147,22 +104,6 @@ namespace RoyalBank.Controllers
         public async Task<IActionResult> DeleteCustomer(int id)
         {
             if (!IsAdmin()) return RedirectToAction("Login", "Home");
-
-            //var customer = await _customerRepo.GetByIdAsync(id);
-            //string customerName  = customer?.FullName ?? $"ID:{id}";
-            //string customerEmail = customer?.Email ?? "";
-
-            //await _customerRepo.DeleteAsync(id);
-
-            //// Record deletion in audit history (no customerId since customer is deleted)
-            //await _complianceRepo.AddAuditLogAsync(new AuditLog
-            //{
-            //    CustomerId = null,
-            //    Action     = "Customer Deleted",
-            //    Status     = "DELETED",
-            //    Remarks    = $"Customer {customerName} ({customerEmail}) deleted by Admin ({AdminEmail()})",
-            //    Timestamp  = DateTime.Now
-            //});
 
             await _adminService.DeleteCustomer(id, AdminEmail());
 
