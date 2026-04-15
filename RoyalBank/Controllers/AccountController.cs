@@ -19,7 +19,6 @@ namespace RoyalBank.Controllers
         private int  GetCustomerId() => HttpContext.Session.GetInt32("CustomerId") ?? 0;
         private bool IsCustomer()    => HttpContext.Session.GetString("UserRole") == "Customer";
 
-        // GET /Account/CreateAccount
         public async Task<IActionResult> CreateAccount()
         {
             if (!IsCustomer()) return RedirectToAction("Login", "Home");
