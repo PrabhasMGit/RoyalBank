@@ -1,0 +1,77 @@
+@model List<Customer>
+@{ ViewData["Title"] = "Customers List"; }
+
+<div class="page-heading">
+    <h5><i class="fas fa-users me-2"></i>Customers List</h5>
+</div>
+
+<div class="rb-card">
+    <div class="card-title"><span><i class="fas fa-user-friends me-2"></i>All Registered Customers (@Model.Count)</span></div>
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted">No customers registered yet.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table rb-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                        <th>KYC Status</th>
+                        <th>Onboarding</th>
+                        <th>Accounts</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in Model)
+                    {
+                        bool kycVerified = c.KycDocuments.Any(d => d.VerificationStatus == VerificationStatus.VERIFIED);
+                        string kycBadge  = kycVerified ? "badge-verified"
+                                         : c.KycDocuments.Any(d => d.VerificationStatus == VerificationStatus.PENDING) ? "badge-pending"
+                                         : c.KycDocuments.Any(d => d.VerificationStatus == VerificationStatus.REJECTED) ? "badge-rejected"
+                                         : "bg-secondary";
+                        string kycText   = kycVerified ? "Verified"
+                                         : c.KycDocuments.Any(d => d.VerificationStatus == VerificationStatus.PENDING) ? "Pending"
+                                         : c.KycDocuments.Any(d => d.VerificationStatus == VerificationStatus.REJECTED) ? "Rejected"
+                                         : "Not Uploaded";
+                        string obCls     = c.OnboardingStatus == OnboardingStatus.NEW ? "badge-new"
+                                         : c.OnboardingStatus == OnboardingStatus.IN_PROGRESS ? "badge-inprog"
+                                         : "badge-completed";
+
+                        <tr>
+                            <td>@c.CustomerId</td>
+                            <td><strong>@c.FullName</strong></td>
+                            <td><small>@c.Email</small></td>
+                            <td>@c.MobileNumber</td>
+                            <td><span class="badge @kycBadge">@kycText</span></td>
+                            <td><span class="badge @obCls">@c.OnboardingStatus.ToString().Replace("_"," ")</span></td>
+                            <td>
+                                @{
+                                    int active = c.Accounts.Count(a => a.AccountStatus == AccountStatus.ACTIVE);
+                                    int total  = c.Accounts.Count;
+                                }
+                                <small>@active active / @total total</small>
+                            </td>
+                            <td>
+                                <form asp-action="DeleteCustomer" asp-controller="Admin" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@c.CustomerId" />
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Delete customer @c.FullName? All their data will be removed.')">
+                                        <i class="fas fa-trash me-1"></i>Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

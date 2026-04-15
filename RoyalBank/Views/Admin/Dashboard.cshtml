@@ -1,0 +1,85 @@
+@model AdminDashboardViewModel
+@{ ViewData["Title"] = "Admin Dashboard"; }
+
+<div class="page-heading">
+    <h5><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</h5>
+    <span class="text-muted small">Royal Bank — Administration</span>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-6 col-md-3">
+        <div class="stat-card"><div class="lbl">Total Customers</div><div class="val">@Model.TotalCustomers</div></div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card" style="border-left-color:#ffc107">
+            <div class="lbl">Pending Accounts</div><div class="val">@Model.PendingAccounts</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card" style="border-left-color:#28a745">
+            <div class="lbl">Active Accounts</div><div class="val">@Model.ActiveAccounts</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card" style="border-left-color:#6f42c1">
+            <div class="lbl">Audit Logs</div><div class="val">@Model.TotalAuditLogs</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="rb-card">
+            <div class="card-title">
+                <span><i class="fas fa-users-cog me-2"></i>Officers (@Model.Officers.Count)</span>
+                <a asp-action="CreateOfficer" asp-controller="Admin" class="btn btn-sm btn-primary">Add Officer</a>
+            </div>
+            @if (!Model.Officers.Any())
+            {
+                <p class="text-muted small">No officers created yet.</p>
+            }
+            else
+            {
+                <table class="table table-sm rb-table">
+                    <thead><tr><th>Email</th><th>Role</th></tr></thead>
+                    <tbody>
+                        @foreach (var o in Model.Officers)
+                        {
+                            <tr>
+                                <td>@o.Username</td>
+                                <td>
+                                    <span class="badge @(o.Role == UserRole.KYC ? "bg-info text-dark" : "bg-warning text-dark")">
+                                        @o.Role
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="rb-card">
+            <div class="card-title"><span><i class="fas fa-bolt me-2"></i>Quick Actions</span></div>
+            <div class="d-grid gap-2">
+                <a asp-action="CreateOfficer" asp-controller="Admin" class="btn btn-outline-primary text-start">
+                    <i class="fas fa-user-plus me-2"></i>Create New Officer
+                </a>
+                <a asp-action="OfficersList" asp-controller="Admin" class="btn btn-outline-secondary text-start">
+                    <i class="fas fa-list-ul me-2"></i>View / Delete Officers
+                </a>
+                <a asp-action="CustomersList" asp-controller="Admin" class="btn btn-outline-danger text-start">
+                    <i class="fas fa-users me-2"></i>View / Delete Customers
+                </a>
+                <a asp-action="AccountsList" asp-controller="Admin" class="btn btn-outline-success text-start">
+                    <i class="fas fa-piggy-bank me-2"></i>View / Deactivate Accounts
+                </a>
+                <a asp-action="AuditRecord" asp-controller="Admin" class="btn btn-outline-info text-start">
+                    <i class="fas fa-clipboard-list me-2"></i>View Audit Records
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

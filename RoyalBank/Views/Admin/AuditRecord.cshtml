@@ -1,0 +1,57 @@
+@model List<AuditLog>
+@{ ViewData["Title"] = "Audit Records"; }
+
+<div class="page-heading">
+    <h5><i class="fas fa-clipboard-list me-2"></i>Audit Records</h5>
+</div>
+
+<div class="rb-card">
+    <div class="card-title">
+        <span><i class="fas fa-history me-2"></i>System Audit Trail (@Model.Count entries)</span>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted">No audit records yet.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table rb-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Customer / User</th>
+                        <th>Action</th>
+                        <th>Status</th>
+                        <th>Remarks</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var log in Model)
+                    {
+                        <tr>
+                            <td>@log.LogId</td>
+                            <td>
+                                @if (log.Customer != null)
+                                {
+                                    <strong>@log.Customer.FullName</strong>
+                                    <br /><small class="text-muted">@log.Customer.Email</small>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-dark">System / Admin</span>
+                                }
+                            </td>
+                            <td>@log.Action</td>
+                            <td><span class="badge bg-secondary">@log.Status</span></td>
+                            <td><small class="text-muted">@log.Remarks</small></td>
+                            <td><small>@log.Timestamp.ToString("dd MMM yyyy HH:mm")</small></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

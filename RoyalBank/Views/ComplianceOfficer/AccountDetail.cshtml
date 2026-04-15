@@ -1,0 +1,180 @@
+@model Account
+@{
+    ViewData["Title"] = "Account Detail";
+    var risk = ViewBag.RiskProfile as RiskProfile;
+    int age  = 0;
+    if (Model.Customer != null)
+    {
+        age = DateTime.Today.Year - Model.Customer.DateOfBirth.Year;
+        if (Model.Customer.DateOfBirth.Date > DateTime.Today.AddYears(-age)) age--;
+    }
+}
+
+<div class="page-heading">
+    <h5><i class="fas fa-file-invoice me-2"></i>Account Detail — #@Model.AccountId</h5>
+    <a asp-action="Dashboard" asp-controller="ComplianceOfficer" class="btn btn-sm btn-outline-secondary">Back</a>
+</div>
+
+<div class="row g-3">
+
+    <!-- Left: Customer + Account Info -->
+    <div class="col-md-4">
+        <div class="rb-card">
+            <div class="card-title"><span><i class="fas fa-user me-2"></i>Customer Info</span></div>
+            <table class="table table-sm table-borderless small mb-0">
+                <tr><td class="text-muted">Name</td>    <td><strong>@Model.Customer?.FullName</strong></td></tr>
+                <tr><td class="text-muted">Email</td>   <td>@Model.Customer?.Email</td></tr>
+                <tr><td class="text-muted">Mobile</td>  <td>@Model.Customer?.MobileNumber</td></tr>
+                <tr><td class="text-muted">Age</td>     <td>@age years</td></tr>
+                <tr><td class="text-muted">Income</td>  <td>Rs. @Model.Customer?.Income.ToString("N0")</td></tr>
+                <tr><td class="text-muted">Address</td> <td>@Model.Customer?.Address</td></tr>
+            </table>
+        </div>
+
+        <div class="rb-card">
+            <div class="card-title"><span><i class="fas fa-piggy-bank me-2"></i>Account Info</span></div>
+            <table class="table table-sm table-borderless small mb-0">
+                <tr><td class="text-muted">Account ID</td><td><strong>#@Model.AccountId</strong></td></tr>
+                <tr><td class="text-muted">Type</td>     <td>@Model.AccountType</td></tr>
+                <tr><td class="text-muted">Created</td>  <td>@Model.CreatedDate.ToString("dd MMM yyyy")</td></tr>
+                <tr>
+                    <td class="text-muted">Status</td>
+                    <td>
+                        @{
+                            string ac = Model.AccountStatus == AccountStatus.ACTIVE   ? "badge-active"
+                                      : Model.AccountStatus == AccountStatus.REJECTED  ? "badge-rejected"
+                                      : "badge-pending";
+                        }
+                        <span class="badge @ac">@Model.AccountStatus.ToString().Replace("_"," ")</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Right: Risk + Decision -->
+    <div class="col-md-8">
+
+        <!-- Risk Assessment -->
+        <div class="rb-card">
+            <div class="card-title"><span><i class="fas fa-chart-bar me-2"></i>Risk Assessment</span></div>
+
+            @if (risk == null)
+            {
+                <div class="note-info mb-3">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Risk not calculated yet. Click below to assess.
+                </div>
+                <form asp-action="CalculateRiskScore" asp-controller="ComplianceOfficer" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="customerId" value="@Model.CustomerId" />
+                    <input type="hidden" name="accountId"  value="@Model.AccountId" />
+                    <button type="submit" class="btn btn-warning fw-semibold">
+                        <i class="fas fa-calculator me-2"></i>Calculate Risk Score
+                    </button>
+                </form>
+            }
+            else
+            {
+                
+                    string ringColor = risk.RiskLevel == RiskLevel.LOW  ? "#28a745"
+                                     : risk.RiskLevel == RiskLevel.HIGH ? "#dc3545" : "#ffc107";
+                    string rc        = risk.RiskLevel == RiskLevel.LOW  ? "badge-low"
+                                     : risk.RiskLevel == RiskLevel.HIGH ? "badge-high" : "badge-medium";
+                
+                <div class="d-flex align-items-center mb-3">
+                    <div class="risk-circle me-3" style="background:@ringColor">@risk.Score</div>
+                    <div>
+                        <div class="fw-bold fs-5">
+                            Risk Level: <span class="badge @rc fs-6">@risk.RiskLevel</span>
+                        </div>
+                        <small class="text-muted">Assessed: @risk.AssessedAt.ToString("dd MMM yyyy HH:mm")</small>
+                    </div>
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <div class="p-2 bg-light rounded text-center">
+                            <div class="fw-bold text-primary">@age yrs</div>
+                            <small class="text-muted">Age</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-2 bg-light rounded text-center">
+                            <div class="fw-bold text-primary">Rs. @Model.Customer?.Income.ToString("N0")</div>
+                            <small class="text-muted">Annual Income</small>
+                        </div>
+                    </div>
+                </div>
+                @* <form asp-action="CalculateRiskScore" asp-controller="ComplianceOfficer" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="customerId" value="@Model.CustomerId" />
+                    <input type="hidden" name="accountId"  value="@Model.AccountId" />
+                    <button type="submit" class="btn btn-outline-warning btn-sm">
+                        <i class="fas fa-sync me-1"></i>Re-calculate
+                    </button>
+                </form> *@
+            }
+        </div>
+
+        <!-- Decision Panel -->
+        @if (Model.AccountStatus == AccountStatus.PENDING_APPROVAL)
+        {
+            <div class="rb-card">
+                <div class="card-title"><span><i class="fas fa-gavel me-2"></i>Decision</span></div>
+
+                @if (risk == null)
+                {
+                    <div class="note-info">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Please calculate the risk score first before making a decision.
+                    </div>
+                }
+                else
+                {
+                    <!-- Approve -->
+                    <form asp-action="ApproveAccount" asp-controller="ComplianceOfficer"
+                          method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="AccountId" value="@Model.AccountId" />
+                        <button type="submit" class="btn btn-success me-2"
+                                onclick="return confirm('Approve and activate this account?')">
+                            <i class="fas fa-check me-1"></i>Approve Account
+                        </button>
+                    </form>
+
+                    <!-- Reject toggle -->
+                    <button class="btn btn-danger" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#rejectBox">
+                        <i class="fas fa-times me-1"></i>Reject Account
+                    </button>
+
+                    <div class="collapse mt-3" id="rejectBox">
+                        <form asp-action="RejectAccount" asp-controller="ComplianceOfficer" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="AccountId" value="@Model.AccountId" />
+                            <label class="form-label fw-semibold small">
+                                Rejection Reason <span class="text-danger">*</span>
+                            </label>
+                            <textarea name="RejectionNote" class="form-control mb-2" rows="3"
+                                      placeholder="Explain clearly so the customer understands..."></textarea>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-times-circle me-1"></i>Confirm Rejection
+                            </button>
+                        </form>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="@(Model.AccountStatus == AccountStatus.REJECTED ? "note-danger" : "note-success") mb-3">
+                <i class="fas fa-info-circle me-2"></i>
+                This account has been <strong>@Model.AccountStatus.ToString().ToLower().Replace("_"," ")</strong>.
+                @if (!string.IsNullOrEmpty(Model.RejectionNote))
+                {
+                    <div class="mt-1"><strong>Reason:</strong> @Model.RejectionNote</div>
+                }
+            </div>
+        }
+    </div>
+</div>

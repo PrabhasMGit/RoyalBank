@@ -1,0 +1,114 @@
+@model KycDocument
+@{ ViewData["Title"] = "Review Document"; }
+
+<div class="page-heading">
+    <h5><i class="fas fa-search me-2"></i>Review KYC Document</h5>
+    <a asp-action="Dashboard" asp-controller="KycOfficer" class="btn btn-sm btn-outline-secondary">Back</a>
+</div>
+
+<div class="row g-3">
+
+    <!-- Customer Info + Decision -->
+    <div class="col-md-4">
+        <div class="rb-card">
+            <div class="card-title"><span><i class="fas fa-user me-2"></i>Customer Info</span></div>
+            <table class="table table-sm table-borderless small mb-0">
+                <tr><td class="text-muted">Name</td>    <td><strong>@Model.Customer?.FullName</strong></td></tr>
+                <tr><td class="text-muted">Email</td>   <td>@Model.Customer?.Email</td></tr>
+                <tr><td class="text-muted">Mobile</td>  <td>@Model.Customer?.MobileNumber</td></tr>
+                <tr><td class="text-muted">DOB</td>     <td>@Model.Customer?.DateOfBirth.ToString("dd MMM yyyy")</td></tr>
+                <tr><td class="text-muted">Income</td>  <td>Rs. @Model.Customer?.Income.ToString("N0")</td></tr>
+                <tr><td class="text-muted">Doc Type</td><td>@Model.DocumentType</td></tr>
+                <tr><td class="text-muted">Uploaded</td><td>@Model.UploadedAt.ToString("dd MMM yyyy HH:mm")</td></tr>
+                <tr>
+                    <td class="text-muted">Status</td>
+                    <td>
+                        @{
+                            string bc = Model.VerificationStatus == VerificationStatus.VERIFIED ? "badge-verified"
+                                      : Model.VerificationStatus == VerificationStatus.REJECTED  ? "badge-rejected"
+                                      : "badge-pending";
+                        }
+                        <span class="badge @bc">@Model.VerificationStatus</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        @if (Model.VerificationStatus == VerificationStatus.PENDING)
+        {
+            <div class="rb-card">
+                <div class="card-title"><span><i class="fas fa-gavel me-2"></i>Decision</span></div>
+
+                <!-- Approve -->
+                <form asp-action="ApproveDocument" asp-controller="KycOfficer" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="DocumentId" value="@Model.DocumentId" />
+                    <button type="submit" class="btn btn-success w-100 mb-2"
+                            onclick="return confirm('Approve this document?')">
+                        <i class="fas fa-check me-1"></i>Approve Document
+                    </button>
+                </form>
+
+                <!-- Reject toggle -->
+                <button class="btn btn-danger w-100" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#rejectBox">
+                    <i class="fas fa-times me-1"></i>Reject Document
+                </button>
+
+                <div class="collapse mt-3" id="rejectBox">
+                    <form asp-action="RejectDocument" asp-controller="KycOfficer" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="DocumentId" value="@Model.DocumentId" />
+                        <label class="form-label fw-semibold small">
+                            Rejection Reason <span class="text-danger">*</span>
+                        </label>
+                        <textarea name="RejectionNote" class="form-control mb-2" rows="3"
+                                  placeholder="Tell the customer what to fix..."></textarea>
+                        <button type="submit" class="btn btn-danger w-100">
+                            <i class="fas fa-times-circle me-1"></i>Confirm Rejection
+                        </button>
+                    </form>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="@(Model.VerificationStatus == VerificationStatus.REJECTED ? "note-danger" : "note-success") mb-3">
+                <i class="fas fa-info-circle me-2"></i>
+                Document already <strong>@Model.VerificationStatus.ToString().ToLower()</strong>.
+                @if (!string.IsNullOrEmpty(Model.RejectionNote))
+                {
+                    <div class="mt-1"><strong>Reason:</strong> @Model.RejectionNote</div>
+                }
+            </div>
+        }
+    </div>
+
+    <!-- Document Preview -->
+    <div class="col-md-8">
+        <div class="rb-card">
+            <div class="card-title"><span><i class="fas fa-file me-2"></i>Document Preview</span></div>
+            @if (!string.IsNullOrEmpty(Model.FilePath))
+            {
+                @if (Model.FilePath.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                {
+                    <iframe src="@Model.FilePath"
+                            style="width:100%;height:500px;border-radius:6px;border:1px solid #ddd;"></iframe>
+                }
+                else
+                {
+                    <img src="@Model.FilePath" class="img-fluid rounded"
+                         style="max-height:500px;width:100%;object-fit:contain;border:1px solid #eee;"
+                         alt="Document" />
+                }
+                <a href="@Model.FilePath" target="_blank" class="btn btn-outline-primary btn-sm mt-2">
+                    <i class="fas fa-external-link-alt me-1"></i>Open Full View
+                </a>
+            }
+            else
+            {
+                <div class="upload-area"><p class="text-muted">No file found.</p></div>
+            }
+        </div>
+    </div>
+</div>

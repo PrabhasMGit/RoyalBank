@@ -1,0 +1,174 @@
+@model CustomerDashboardViewModel
+@{
+    ViewData["Title"] = "My Dashboard";
+    bool canUpload = ViewBag.CanUpload ?? false;
+}
+
+<div class="page-heading">
+    <h5><i class="fas fa-home me-2"></i>Welcome, @Model.Customer.FullName</h5>
+    @{
+        string obCls = Model.Customer.OnboardingStatus == OnboardingStatus.NEW ? "badge-new"
+                     : Model.Customer.OnboardingStatus == OnboardingStatus.IN_PROGRESS ? "badge-inprog"
+                     : "badge-completed";
+    }
+    <span class="badge @obCls">@Model.Customer.OnboardingStatus.ToString().Replace("_"," ")</span>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.KycRejectionNote))
+{
+    <div class="note-danger mb-3">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <strong>KYC Rejected:</strong> @Model.KycRejectionNote
+        <br /><small>Please upload a corrected document to continue.</small>
+    </div>
+}
+
+<div class="row g-3 mb-3">
+    <div class="col-6 col-md-3">
+        <div class="stat-card"><div class="lbl">Documents</div><div class="val">@Model.KycDocuments.Count</div></div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card" style="border-left-color:#28a745">
+            <div class="lbl">KYC Status</div>
+            <div class="val" style="font-size:1rem;margin-top:4px;">
+                @if (Model.KycDocuments.Any(d => d.VerificationStatus == VerificationStatus.VERIFIED))
+                { <span class="badge badge-verified">Verified</span> }
+                else if (Model.KycDocuments.Any(d => d.VerificationStatus == VerificationStatus.REJECTED))
+                { <span class="badge badge-rejected">Rejected</span> }
+                else if (Model.KycDocuments.Any(d => d.VerificationStatus == VerificationStatus.PENDING))
+                { <span class="badge badge-pending">Pending</span> }
+                else
+                { <span class="badge bg-secondary">Not Uploaded</span> }
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card" style="border-left-color:#17a2b8"><div class="lbl">Accounts</div><div class="val">@Model.Accounts.Count</div></div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card" style="border-left-color:#6f42c1">
+            <div class="lbl">Active Accounts</div>
+            <div class="val">@Model.Accounts.Count(a => a.AccountStatus == AccountStatus.ACTIVE)</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="rb-card h-100">
+            <div class="card-title">
+                <span><i class="fas fa-user me-2"></i>My Profile</span>
+                <a asp-action="UpdateProfile" asp-controller="Customer" class="btn btn-sm btn-outline-primary">Edit</a>
+            </div>
+            <table class="table table-sm table-borderless small mb-0">
+                <tr><td class="text-muted">Name</td>   <td><strong>@Model.Customer.FullName</strong></td></tr>
+                <tr><td class="text-muted">Email</td>  <td>@Model.Customer.Email</td></tr>
+                <tr><td class="text-muted">Mobile</td> <td>@Model.Customer.MobileNumber</td></tr>
+                <tr><td class="text-muted">DOB</td>    <td>@Model.Customer.DateOfBirth.ToString("dd MMM yyyy")</td></tr>
+                <tr><td class="text-muted">Income</td> <td>Rs. @Model.Customer.Income.ToString("N0")</td></tr>
+                <tr><td class="text-muted">Address</td><td>@Model.Customer.Address</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <!-- KYC Documents -->
+        <div class="rb-card">
+            <div class="card-title">
+                <span><i class="fas fa-id-card me-2"></i>KYC Documents</span>
+                @if (canUpload)
+                {
+                    <a asp-action="UploadDocument" asp-controller="Customer" class="btn btn-sm btn-primary">
+                        <i class="fas fa-upload me-1"></i>Upload
+                    </a>
+                }
+                else
+                {
+                    <button class="btn btn-sm btn-secondary" disabled title="Upload disabled — document pending or verified">
+                        <i class="fas fa-upload me-1"></i>Upload
+                    </button>
+                }
+            </div>
+
+            @if (!Model.KycDocuments.Any())
+            {
+                <div class="upload-area">
+                    <i class="fas fa-folder-open fa-2x text-muted mb-2"></i>
+                    <p class="text-muted mb-2">No documents uploaded yet.</p>
+                    <a asp-action="UploadDocument" asp-controller="Customer" class="btn btn-sm btn-primary">Upload Now</a>
+                </div>
+            }
+            else
+            {
+                @if (canUpload && !string.IsNullOrEmpty(Model.KycRejectionNote))
+                {
+                    <div class="note-info mb-2">
+                        <i class="fas fa-redo me-2"></i>Your document was rejected. You can upload a new document.
+                    </div>
+                }
+                else if (!canUpload)
+                {
+                    <div class="note-info mb-2">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Upload is disabled while your document is <strong>pending review</strong> or <strong>verified</strong>.
+                    </div>
+                }
+                <table class="table table-sm rb-table">
+                    <thead><tr><th>Type</th><th>Uploaded</th><th>Status</th><th>Officer Note</th></tr></thead>
+                    <tbody>
+                        @foreach (var d in Model.KycDocuments)
+                        {
+                            string bc = d.VerificationStatus == VerificationStatus.VERIFIED ? "badge-verified"
+                                      : d.VerificationStatus == VerificationStatus.REJECTED  ? "badge-rejected"
+                                      : "badge-pending";
+                            <tr>
+                                <td>@d.DocumentType</td>
+                                <td>@d.UploadedAt.ToString("dd MMM yyyy")</td>
+                                <td><span class="badge @bc">@d.VerificationStatus</span></td>
+                                <td><small class="text-danger">@d.RejectionNote</small></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+
+        <!-- My Accounts -->
+        <div class="rb-card">
+            <div class="card-title">
+                <span><i class="fas fa-piggy-bank me-2"></i>My Accounts</span>
+                @if (Model.CanCreateAccount)
+                {
+                    <a asp-action="CreateAccount" asp-controller="Account" class="btn btn-sm btn-primary">New Account</a>
+                }
+            </div>
+            @if (!Model.CanCreateAccount && !Model.Accounts.Any())
+            {
+                <div class="note-info">KYC must be verified before creating an account.</div>
+            }
+            @if (!Model.Accounts.Any())
+            { <p class="text-muted small mt-2">No accounts created yet.</p> }
+            else
+            {
+                <table class="table table-sm rb-table">
+                    <thead><tr><th>Type</th><th>Created</th><th>Status</th><th>Note</th></tr></thead>
+                    <tbody>
+                        @foreach (var a in Model.Accounts)
+                        {
+                            string ac = a.AccountStatus == AccountStatus.ACTIVE    ? "badge-active"
+                                      : a.AccountStatus == AccountStatus.REJECTED   ? "badge-rejected"
+                                      : a.AccountStatus == AccountStatus.INACTIVE   ? "bg-secondary"
+                                      : "badge-pending";
+                            <tr>
+                                <td>@a.AccountType</td>
+                                <td>@a.CreatedDate.ToString("dd MMM yyyy")</td>
+                                <td><span class="badge @ac">@a.AccountStatus.ToString().Replace("_"," ")</span></td>
+                                <td><small class="text-danger">@a.RejectionNote</small></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>

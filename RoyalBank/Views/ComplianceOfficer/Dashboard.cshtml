@@ -1,0 +1,92 @@
+@model List<Account>
+@{ ViewData["Title"] = "Compliance Officer Dashboard"; }
+
+<div class="page-heading">
+    <h5><i class="fas fa-shield-alt me-2"></i>Compliance Officer Dashboard</h5>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-6 col-md-3">
+        <div class="stat-card"><div class="lbl">Total Accounts</div><div class="val">@Model.Count</div></div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card" style="border-left-color:#ffc107">
+            <div class="lbl">Pending Approval</div>
+            <div class="val">@Model.Count(a => a.AccountStatus == AccountStatus.PENDING_APPROVAL)</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card" style="border-left-color:#28a745">
+            <div class="lbl">Active</div>
+            <div class="val">@Model.Count(a => a.AccountStatus == AccountStatus.ACTIVE)</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card" style="border-left-color:#dc3545">
+            <div class="lbl">Rejected</div>
+            <div class="val">@Model.Count(a => a.AccountStatus == AccountStatus.REJECTED)</div>
+        </div>
+    </div>
+</div>
+
+<div class="rb-card">
+    <div class="card-title">
+        <span><i class="fas fa-list me-2"></i>Accounts — KYC Verified Customers</span>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="upload-area">
+            <i class="fas fa-inbox fa-2x text-muted mb-2"></i>
+            <p class="text-muted mb-0">No accounts from KYC-verified customers yet.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table rb-table">
+                <thead>
+                    <tr>
+                        <th>#</th><th>Customer</th><th>Account Type</th>
+                        <th>Created</th><th>Risk Level</th><th>Status</th><th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var a in Model)
+                    {
+                        string ac = a.AccountStatus == AccountStatus.ACTIVE    ? "badge-active"
+                                  : a.AccountStatus == AccountStatus.REJECTED   ? "badge-rejected"
+                                  : a.AccountStatus == AccountStatus.INACTIVE   ? "bg-secondary"
+                                  : "badge-pending";
+                        <tr>
+                            <td>@a.AccountId</td>
+                            <td>
+                                <strong>@(a.Customer?.FullName ?? "—")</strong><br />
+                                <small class="text-muted">@a.Customer?.Email</small>
+                            </td>
+                            <td>@a.AccountType</td>
+                            <td>@a.CreatedDate.ToString("dd MMM yyyy")</td>
+                            <td>
+                                @if (a.Customer?.RiskProfile != null)
+                                {
+                                    string rc = a.Customer.RiskProfile.RiskLevel == RiskLevel.LOW  ? "badge-low"
+                                              : a.Customer.RiskProfile.RiskLevel == RiskLevel.HIGH ? "badge-high"
+                                              : "badge-medium";
+                                    <span class="badge @rc">@a.Customer.RiskProfile.RiskLevel</span>
+                                }
+                                else { <span class="badge bg-secondary">Not Assessed</span> }
+                            </td>
+                            <td><span class="badge @ac">@a.AccountStatus.ToString().Replace("_", " ")</span></td>
+                            <td>
+                                <a asp-action="AccountDetail" asp-controller="ComplianceOfficer"
+                                   asp-route-id="@a.AccountId" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye me-1"></i>Review
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

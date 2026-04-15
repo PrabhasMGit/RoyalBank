@@ -1,0 +1,50 @@
+@model List<User>
+@{ ViewData["Title"] = "Officers List"; }
+
+<div class="page-heading">
+    <h5><i class="fas fa-users-cog me-2"></i>Officers List</h5>
+    <a asp-action="CreateOfficer" asp-controller="Admin" class="btn btn-sm btn-primary">
+        <i class="fas fa-plus me-1"></i>Add Officer
+    </a>
+</div>
+
+<div class="rb-card">
+    <div class="card-title"><span><i class="fas fa-id-badge me-2"></i>All Officers (@Model.Count)</span></div>
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted">No officers created yet.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table rb-table">
+                <thead><tr><th>#</th><th>Email</th><th>Role</th><th>Action</th></tr></thead>
+                <tbody>
+                    @foreach (var o in Model)
+                    {
+                        <tr>
+                            <td>@o.Id</td>
+                            <td>@o.Username</td>
+                            <td>
+                                <span class="badge @(o.Role == UserRole.KYC ? "bg-info text-dark" : "bg-warning text-dark")">
+                                    @o.Role Officer
+                                </span>
+                            </td>
+                            <td>
+                                <form asp-action="DeleteOfficer" asp-controller="Admin" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@o.Id" />
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Delete this officer? This cannot be undone.')">
+                                        <i class="fas fa-trash me-1"></i>Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

@@ -1,0 +1,90 @@
+body { background-color: #f5f7fa; font-family: 'Segoe UI', sans-serif; }
+
+/* Auth pages */
+.auth-wrapper {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #003366, #0055aa);
+    display: flex; align-items: center; justify-content: center;
+}
+.auth-card {
+    background: #fff; border-radius: 12px;
+    padding: 2.5rem; width: 100%; max-width: 460px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+.auth-card .logo { text-align: center; margin-bottom: 1.5rem; }
+.auth-card .logo i { font-size: 2.5rem; color: #003366; }
+.auth-card .logo h4 { color: #003366; font-weight: 700; margin: 0.4rem 0 0.2rem; }
+.auth-card .logo p { color: #888; font-size: 0.85rem; margin: 0; }
+
+/* Page heading */
+.page-heading {
+    background: #fff; border-radius: 8px; padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem; border-left: 4px solid #003366;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.page-heading h5 { margin: 0; color: #003366; font-weight: 700; }
+
+/* Cards */
+.rb-card {
+    background: #fff; border-radius: 10px; padding: 1.25rem;
+    margin-bottom: 1.25rem; box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+}
+.rb-card .card-title {
+    font-weight: 700; color: #003366; border-bottom: 2px solid #e8edf5;
+    padding-bottom: 0.6rem; margin-bottom: 1rem;
+    display: flex; align-items: center; justify-content: space-between;
+}
+
+/* Stat cards */
+.stat-card {
+    background: #fff; border-radius: 10px; padding: 1.2rem;
+    border-left: 4px solid #003366; box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+}
+.stat-card .val { font-size: 1.8rem; font-weight: 700; color: #003366; }
+.stat-card .lbl { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Table */
+.rb-table thead th { background: #003366; color: #fff; border: none; }
+.rb-table tbody tr:hover { background: #f0f5ff; }
+
+/* Status badges */
+.badge-pending   { background: #ffc107; color: #000; }
+.badge-verified  { background: #28a745; color: #fff; }
+.badge-active    { background: #28a745; color: #fff; }
+.badge-rejected  { background: #dc3545; color: #fff; }
+.badge-new       { background: #17a2b8; color: #fff; }
+.badge-inprog    { background: #fd7e14; color: #fff; }
+.badge-completed { background: #6f42c1; color: #fff; }
+.badge-low       { background: #28a745; color: #fff; }
+.badge-medium    { background: #ffc107; color: #000; }
+.badge-high      { background: #dc3545; color: #fff; }
+
+/* Note boxes */
+.note-info    { background: #fff8e1; border-left: 4px solid #ffc107; border-radius: 6px; padding: 0.75rem 1rem; }
+.note-danger  { background: #fde8e8; border-left: 4px solid #dc3545; border-radius: 6px; padding: 0.75rem 1rem; }
+.note-success { background: #e8f5e9; border-left: 4px solid #28a745; border-radius: 6px; padding: 0.75rem 1rem; }
+
+/* File upload area */
+.upload-area {
+    border: 2px dashed #ccc; border-radius: 8px;
+    padding: 1.5rem; text-align: center; background: #fafafa;
+}
+
+/* Risk score circle */
+.risk-circle {
+    width: 80px; height: 80px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; font-weight: 700; color: #fff;
+}
+
+/* Account type cards */
+.account-type-card { border: 2px solid #dee2e6; border-radius: 8px; padding: 1rem; text-align: center; cursor: pointer; }
+.account-type-card:hover { border-color: #003366; background: #f0f5ff; }
+input[type=radio]:checked + .account-type-card { border-color: #003366; background: #e8f0fe; }
+
+/* Validation */
+.field-validation-error { color: #dc3545; font-size: 0.8rem; display: block; }
+.input-validation-error { border-color: #dc3545 !important; }
+
+.badge-inactive { background: #6c757d; color: #fff; }

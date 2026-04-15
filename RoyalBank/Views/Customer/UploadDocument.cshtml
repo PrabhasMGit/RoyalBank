@@ -1,0 +1,45 @@
+@model UploadDocumentViewModel
+@{ ViewData["Title"] = "Upload Document"; }
+
+<div class="page-heading">
+    <h5><i class="fas fa-upload me-2"></i>Upload KYC Document</h5>
+    <a asp-action="Dashboard" asp-controller="Customer" class="btn btn-sm btn-outline-secondary">Back</a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="rb-card">
+            <form asp-action="UploadDocument" asp-controller="Customer" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="DocumentType" class="form-label fw-semibold">Document Type <span class="text-danger">*</span></label>
+                    <select asp-for="DocumentType" class="form-select">
+                        <option value="">— Select —</option>
+                        <option>Aadhaar Card</option>
+                        <option>PAN Card</option>
+                        <option>Passport</option>
+                        <option>Driving Licence</option>
+                        <option>Voter ID</option>
+                    </select>
+                    <span asp-validation-for="DocumentType" class="field-validation-error"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="DocumentFile" class="form-label fw-semibold">File <span class="text-danger">*</span></label>
+                    <div class="upload-area mb-2">
+                        <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
+                        <p class="text-muted small mb-2">JPG, PNG or PDF — Max 5 MB</p>
+                        <input asp-for="DocumentFile" type="file" class="form-control" accept=".jpg,.jpeg,.png,.pdf" />
+                    </div>
+                    <span asp-validation-for="DocumentFile" class="field-validation-error"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2">
+                    <i class="fas fa-upload me-2"></i>Upload Document
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

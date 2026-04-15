@@ -1,0 +1,46 @@
+@model UpdateProfileViewModel
+@{ ViewData["Title"] = "Update Profile"; }
+
+<div class="page-heading">
+    <h5><i class="fas fa-user-edit me-2"></i>Update Profile</h5>
+    <a asp-action="Dashboard" asp-controller="Customer" class="btn btn-sm btn-outline-secondary">Back</a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="rb-card">
+            <div class="note-info mb-3">
+                <i class="fas fa-info-circle me-2"></i>
+                You can only update <strong>Name</strong>, <strong>Mobile Number</strong> and <strong>Address</strong>.
+            </div>
+            <form asp-action="UpdateProfile" asp-controller="Customer" method="post">
+                @Html.AntiForgeryToken()
+                <input asp-for="CustomerId" type="hidden" />
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="FullName" class="form-label fw-semibold">Full Name</label>
+                    <input asp-for="FullName" class="form-control" />
+                    <span asp-validation-for="FullName" class="field-validation-error"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="MobileNumber" class="form-label fw-semibold">Mobile Number</label>
+                    <input asp-for="MobileNumber" class="form-control" />
+                    <span asp-validation-for="MobileNumber" class="field-validation-error"></span>
+                    <small class="text-muted">Must start with 6-9 and be 10 digits</small>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Address" class="form-label fw-semibold">Address</label>
+                    <textarea asp-for="Address" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Address" class="field-validation-error"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2">
+                    <i class="fas fa-save me-2"></i>Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
