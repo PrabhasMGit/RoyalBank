@@ -22,7 +22,7 @@ namespace RoyalBank.Controllers
         private bool   IsAdmin()    => HttpContext.Session.GetString("UserRole") == "Admin";
         private string AdminEmail() => HttpContext.Session.GetString("UserEmail") ?? "Admin";
 
-        // GET /Admin/Dashboard
+       
         public async Task<IActionResult> Dashboard()
         {
             if (!IsAdmin()) return RedirectToAction("Login", "Home");
