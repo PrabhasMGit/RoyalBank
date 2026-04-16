@@ -42,7 +42,7 @@ namespace RoyalBank.Controllers
             });
         }
 
-        // GET /Admin/CreateOfficer
+       
         public IActionResult CreateOfficer()
         {
             if (!IsAdmin()) return RedirectToAction("Login", "Home");
