@@ -9,9 +9,7 @@ namespace RoyalBank.Services
         private readonly IKycRepository _kycRepo;
         private readonly ICustomerRepository _customerRepo;
         private readonly IComplianceRepository _complianceRepo;
-
-        public KycService(IKycRepository kycRepo, ICustomerRepository customerRepo,
-            IComplianceRepository complianceRepo)
+        public KycService(IKycRepository kycRepo, ICustomerRepository customerRepo,IComplianceRepository complianceRepo)
         {
             _kycRepo = kycRepo; _customerRepo = customerRepo; _complianceRepo = complianceRepo;
         }
@@ -21,7 +19,7 @@ namespace RoyalBank.Services
             var folder = Path.Combine(env.WebRootPath, "uploads", "documents");
             Directory.CreateDirectory(folder);
             var ext      = Path.GetExtension(model.DocumentFile.FileName);
-            var fileName = $"{customerId}_{DateTime.Now.Ticks}{ext}";
+            var fileName = $"{customerId}_{Guid.NewGuid()}{ext}";
             using (var stream = new FileStream(Path.Combine(folder, fileName), FileMode.Create))
                 await model.DocumentFile.CopyToAsync(stream);
 
@@ -76,19 +74,14 @@ namespace RoyalBank.Services
         public async Task<KycDocument?> GetDocumentById(int id) =>
             await _kycRepo.GetByIdAsync(id);
 
-        // Fix 1: Get rejection note only from the LATEST document if it is REJECTED
-        // Once a new document is uploaded (PENDING or VERIFIED), rejection note disappears
+        // Get rejection note only from the LATEST document if it is REJECTED
         public string? GetActiveRejectionNote(List<KycDocument> docs)
         {
             if (!docs.Any()) return null;
 
             var latest = docs.OrderByDescending(d => d.UploadedAt).First();
-
-            // Show rejection note only if the latest document is REJECTED
-            // If customer uploaded a new doc (PENDING/VERIFIED), note is gone
             if (latest.VerificationStatus == VerificationStatus.REJECTED)
                 return latest.RejectionNote;
-
             return null;
         }
     }

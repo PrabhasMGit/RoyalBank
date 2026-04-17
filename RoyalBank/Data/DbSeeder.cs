@@ -14,7 +14,7 @@ namespace RoyalBank.Data
             {
                 context.Users.Add(new User
                 {
-                    Username     = "admin@royalbank.com",
+                    Username     = "admin@gmail.com",
                     Password     = "Admin@123",
                     HashPassword = BCrypt.Net.BCrypt.HashPassword("Admin@123"),
                     Role         = UserRole.Admin,

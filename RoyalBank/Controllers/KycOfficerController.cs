@@ -7,18 +7,26 @@ namespace RoyalBank.Controllers
     public class KycOfficerController : Controller
     {
         private readonly KycService _kycService;
-        public KycOfficerController(KycService kycService) { _kycService = kycService; }
+        public KycOfficerController(KycService kycService) 
+        {
+            _kycService = kycService;
+        }
 
-        private bool IsKycOfficer() => HttpContext.Session.GetString("UserRole") == "KYC";
+        private bool IsKycOfficer()
+        {
+            return HttpContext.Session.GetString("UserRole") == "KYC";
+        }
 
-        // GET /KycOfficer/Dashboard
+        //KycOfficer Dashboard
+        [HttpGet]
         public async Task<IActionResult> Dashboard()
         {
             if (!IsKycOfficer()) return RedirectToAction("Login", "Home");
             return View(await _kycService.GetAllDocuments());
         }
 
-        // GET /KycOfficer/VerifyDocument/{id}
+        //VerifyDocument/{id}
+        [HttpGet]
         public async Task<IActionResult> VerifyDocument(int id)
         {
             if (!IsKycOfficer()) return RedirectToAction("Login", "Home");
@@ -27,7 +35,7 @@ namespace RoyalBank.Controllers
             return View(doc);
         }
 
-        // POST /KycOfficer/ApproveDocument
+        //ApproveDocument
         [HttpPost]
         public async Task<IActionResult> ApproveDocument(int DocumentId)
         {
@@ -37,7 +45,7 @@ namespace RoyalBank.Controllers
             return RedirectToAction("Dashboard");
         }
 
-       
+        //RejectDocument
         [HttpPost]
         public async Task<IActionResult> RejectDocument(int DocumentId, string? RejectionNote)
         {

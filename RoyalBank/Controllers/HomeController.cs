@@ -15,7 +15,7 @@ namespace RoyalBank.Controllers
             _authService = authService;
         }
 
-        // GET /Home/Index  →  redirect to Login
+        [HttpGet]
         public IActionResult Index()
         {
             if (HttpContext.Session.GetString("UserRole") != null)
@@ -24,7 +24,8 @@ namespace RoyalBank.Controllers
             return RedirectToAction("Login");
         }
 
-        // GET /Home/Login
+        //Login
+        [HttpGet]
         public IActionResult Login()
         {
             if (HttpContext.Session.GetString("UserRole") != null)
@@ -33,7 +34,6 @@ namespace RoyalBank.Controllers
             return View();
         }
 
-        // POST /Home/Login
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -46,7 +46,6 @@ namespace RoyalBank.Controllers
                 return View(model);
 			}
 
-			// Save login info in session
 			HttpContext.Session.SetInt32("UserId",     user.Id);
             HttpContext.Session.SetString("UserEmail", user.Username);
             HttpContext.Session.SetString("UserRole",  user.Role.ToString());
@@ -55,18 +54,13 @@ namespace RoyalBank.Controllers
             return RedirectToDashboard(user.Role.ToString());
         }
 
-        // GET /Home/Logout
+        //Logout
+        [HttpGet]
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
             TempData["Success"] = "You have been logged out successfully.";
             return RedirectToAction("Login");
-        }
-
-        // GET /Home/AccessDenied
-        public IActionResult AccessDenied()
-        {
-            return View();
         }
 
         private IActionResult RedirectToDashboard(string role)

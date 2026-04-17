@@ -27,9 +27,6 @@ namespace RoyalBank.Services
             if (!docs.Any(d => d.VerificationStatus == VerificationStatus.VERIFIED))
                 throw new InvalidOperationException("KYC must be verified before creating an account.");
 
-            // Fix 1: Block creating the same account type if one already exists
-            // regardless of status (PENDING, ACTIVE, REJECTED, INACTIVE)
-            // This prevents re-creating after compliance officer rejection
             var existing = await _accountRepo.GetByCustomerIdAsync(customerId);
             bool alreadyHasThisType = existing.Any(a =>
                 a.AccountType.Equals(model.AccountType, StringComparison.OrdinalIgnoreCase));
@@ -125,7 +122,7 @@ namespace RoyalBank.Services
             });
         }
 
-        public async Task<Account?>      GetAccountDetails(int accountId) => await _accountRepo.GetByIdAsync(accountId);
-        public async Task<List<Account>> GetAllAccounts()                  => await _accountRepo.GetAllAsync();
+        public async Task<Account?>GetAccountDetails(int accountId) => await _accountRepo.GetByIdAsync(accountId);
+        public async Task<List<Account>> GetAllAccounts() => await _accountRepo.GetAllAsync();
     }
 }

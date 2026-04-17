@@ -11,7 +11,8 @@ namespace RoyalBank.ViewModels
 
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Enter a valid email address")]
-        public string Email { get; set; } = string.Empty;
+		[RegularExpression(@"^[a-zA-Z0-9._%+-]+@gmail\.com$", ErrorMessage = "Please Provide valid gmail address")]
+		public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Mobile number is required")]
         [RegularExpression(@"^[6-9][0-9]{9}$", ErrorMessage = "Must start with 6-9 and be 10 digits")]
@@ -28,8 +29,8 @@ namespace RoyalBank.ViewModels
         public DateTime DateOfBirth { get; set; } = DateTime.Today.AddYears(-20);
 
         [Required(ErrorMessage = "Income is required")]
-        [Range(1000, 100000000, ErrorMessage = "Income must be between Rs.1,000 and Rs.10,00,00,000")]
-        [Display(Name = "Annual Income (Rs.)")]
+		[Range(1000, 1000000, ErrorMessage = "Income must be between Rs.1,000 and Rs.10,00,000")]
+		[Display(Name = "Annual Income (Rs.)")]
         public decimal Income { get; set; }
     }
 }
