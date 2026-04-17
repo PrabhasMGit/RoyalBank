@@ -31,7 +31,7 @@ namespace RoyalBank.Controllers
                 return RedirectToAction("Dashboard", "Customer");
             }
 
-            // Fix 1: Check existing accounts — ALL statuses block re-creation (including REJECTED)
+            
             var allAccounts = await _accountService.GetAllAccounts();
             var myAccounts  = allAccounts.Where(a => a.CustomerId == GetCustomerId()).ToList();
 

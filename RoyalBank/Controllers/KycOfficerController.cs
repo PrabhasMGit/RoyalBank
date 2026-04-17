@@ -37,7 +37,7 @@ namespace RoyalBank.Controllers
             return RedirectToAction("Dashboard");
         }
 
-        // POST /KycOfficer/RejectDocument
+       
         [HttpPost]
         public async Task<IActionResult> RejectDocument(int DocumentId, string? RejectionNote)
         {
