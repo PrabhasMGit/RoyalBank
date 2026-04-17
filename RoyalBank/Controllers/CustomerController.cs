@@ -20,11 +20,20 @@ namespace RoyalBank.Controllers
             _accountService  = accountService; _env = env;
         }
 
-        private int    GetCustomerId() => HttpContext.Session.GetInt32("CustomerId") ?? 0;
-        private string GetRole()       => HttpContext.Session.GetString("UserRole") ?? "";
-        private bool   IsCustomer()    => GetRole() == "Customer";
+        private int GetCustomerId() 
+        {   
+            return HttpContext.Session.GetInt32("CustomerId") ?? 0;
+        }
+        private string GetRole()
+        {
+            return HttpContext.Session.GetString("UserRole") ?? "";
+        }
+        private bool IsCustomer()
+        {
+            return GetRole() == "Customer";
+        }
 
-        // ── Register ──────────────────────────────────────────────────────────
+        //Register
         public IActionResult Register()
         {
             if (GetRole() != "") return RedirectToAction("Login", "Home");
@@ -55,7 +64,7 @@ namespace RoyalBank.Controllers
             return RedirectToAction("SetPassword", new { userId = user.Id });
         }
 
-        // ── SetPassword ───────────────────────────────────────────────────────
+        //SetPassword
         public IActionResult SetPassword(int userId)
         {
             if (GetRole() != "") return RedirectToAction("Login", "Home");
@@ -77,10 +86,9 @@ namespace RoyalBank.Controllers
             return RedirectToAction("Login", "Home");
         }
 
-        // ── Dashboard ─────────────────────────────────────────────────────────
+        //Dashboard
         public async Task<IActionResult> Dashboard()
         {
-            // Authorization: only Customer role
             if (!IsCustomer()) return RedirectToAction("Login", "Home");
 
             int cid       = GetCustomerId();
@@ -93,8 +101,7 @@ namespace RoyalBank.Controllers
 
             bool kycVerified = docs.Any(d => d.VerificationStatus == VerificationStatus.VERIFIED);
 
-            // Fix 1: Show rejection note ONLY if latest document is still REJECTED
-            // Once new doc is uploaded (PENDING) or verified, note disappears
+            // Show rejection note ONLY if document is still REJECTED
             string? rejNote = _kycService.GetActiveRejectionNote(docs);
 
             // Upload enabled: no docs yet OR latest doc is rejected
@@ -114,7 +121,7 @@ namespace RoyalBank.Controllers
             });
         }
 
-        // ── UploadDocument ────────────────────────────────────────────────────
+        //UploadDocument
         public async Task<IActionResult> UploadDocument()
         {
             if (!IsCustomer()) return RedirectToAction("Login", "Home");
@@ -143,18 +150,13 @@ namespace RoyalBank.Controllers
                 ModelState.AddModelError("DocumentFile", "Only JPG, PNG and PDF files are allowed.");
                 return View(model);
             }
-            if (model.DocumentFile.Length > 5 * 1024 * 1024)
-            {
-                ModelState.AddModelError("DocumentFile", "File size must not exceed 5 MB.");
-                return View(model);
-            }
 
             await _kycService.UploadDocument(GetCustomerId(), model, _env);
             TempData["Success"] = "Document uploaded. Awaiting KYC Officer verification.";
             return RedirectToAction("Dashboard");
         }
 
-        // ── UpdateProfile ─────────────────────────────────────────────────────
+        //UpdateProfile
         public async Task<IActionResult> UpdateProfile()
         {
             if (!IsCustomer()) return RedirectToAction("Login", "Home");

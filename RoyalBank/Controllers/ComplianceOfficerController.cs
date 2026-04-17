@@ -15,9 +15,13 @@ namespace RoyalBank.Controllers
             _riskService    = riskService;
         }
 
-        private bool IsCompliance() => HttpContext.Session.GetString("UserRole") == "Compliance";
+        private bool IsCompliance()
+        {
+            return HttpContext.Session.GetString("UserRole") == "Compliance";
+        }
 
-        // GET /ComplianceOfficer/Dashboard
+        //ComplianceOfficer Dashboard
+        [HttpGet]
         public async Task<IActionResult> Dashboard()
         {
             if (!IsCompliance()) return RedirectToAction("Login", "Home");
@@ -31,19 +35,23 @@ namespace RoyalBank.Controllers
             return View(filtered);
         }
 
-        // GET /ComplianceOfficer/AccountDetail/{id}
+        //ComplianceOfficer AccountDetail
+        [HttpGet]
         public async Task<IActionResult> AccountDetail(int id)
         {
             if (!IsCompliance()) return RedirectToAction("Login", "Home");
 
             var account = await _accountService.GetAccountDetails(id);
-            if (account == null) { TempData["Error"] = "Account not found."; return RedirectToAction("Dashboard"); }
-
+            if (account == null)
+            {
+                TempData["Error"] = "Account not found.";
+                return RedirectToAction("Dashboard");
+            }
             ViewBag.RiskProfile = await _riskService.GetRiskResult(account.CustomerId);
             return View(account);
         }
 
-        // POST /ComplianceOfficer/CalculateRiskScore
+        //CalculateRiskScore
         [HttpPost]
         public async Task<IActionResult> CalculateRiskScore(int customerId, int accountId)
         {
@@ -53,7 +61,7 @@ namespace RoyalBank.Controllers
             return RedirectToAction("AccountDetail", new { id = accountId });
         }
 
-        // POST /ComplianceOfficer/ApproveAccount
+        //ApproveAccount
         [HttpPost]
         public async Task<IActionResult> ApproveAccount(int AccountId)
         {
@@ -63,7 +71,7 @@ namespace RoyalBank.Controllers
             return RedirectToAction("Dashboard");
         }
 
-        // POST /ComplianceOfficer/RejectAccount
+        //RejectAccount
         [HttpPost]
         public async Task<IActionResult> RejectAccount(int AccountId, string? RejectionNote)
         {

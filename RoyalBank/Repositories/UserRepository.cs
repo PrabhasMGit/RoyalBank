@@ -18,9 +18,17 @@ namespace RoyalBank.Repositories
         public async Task<List<User>> GetAllOfficersAsync() =>
             await _db.Users.Where(u => u.Role == UserRole.Compliance || u.Role == UserRole.KYC).ToListAsync();
 
-        public async Task AddAsync(User u) { await _db.Users.AddAsync(u); await _db.SaveChangesAsync(); }
+        public async Task AddAsync(User u) 
+        { 
+            await _db.Users.AddAsync(u); 
+            await _db.SaveChangesAsync(); 
+        }
 
-        public async Task UpdateAsync(User u) { _db.Users.Update(u); await _db.SaveChangesAsync(); }
+        public async Task UpdateAsync(User u) 
+        {
+            _db.Users.Update(u); 
+            await _db.SaveChangesAsync(); 
+        }
 
         public async Task DeleteAsync(int id)
         {

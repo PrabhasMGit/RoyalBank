@@ -3,7 +3,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RoyalBank.Models
 {
-    public enum AccountStatus { PENDING_APPROVAL, ACTIVE, REJECTED, INACTIVE }
+    public enum AccountStatus 
+    { 
+        PENDING_APPROVAL, ACTIVE, REJECTED, INACTIVE 
+    }
 
     public class Account
     {

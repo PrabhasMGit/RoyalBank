@@ -7,8 +7,6 @@ namespace RoyalBank.Models
     {
         [Key]
         public int LogId { get; set; }
-
-        // Nullable - system events (like officer creation) have no CustomerId
         public int? CustomerId { get; set; }
 
         [Required]

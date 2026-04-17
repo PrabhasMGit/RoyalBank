@@ -39,10 +39,9 @@ namespace RoyalBank.Repositories
             await _db.SaveChangesAsync();
         }
 
-        // Fix 3: Delete related User first (FK constraint), then Customer cascades rest
         public async Task DeleteAsync(int customerId)
         {
-            // Remove linked user first (FK to Customer)
+            // Remove  user first (FK to Customer)
             var linkedUser = await _db.Users.FirstOrDefaultAsync(u => u.CustomerId == customerId);
             if (linkedUser != null)
             {
@@ -50,7 +49,7 @@ namespace RoyalBank.Repositories
                 await _db.SaveChangesAsync();
             }
 
-            // Now delete the customer (EF cascade deletes KycDocuments, Accounts, AuditLogs, RiskProfile)
+            // Then delete the customer
             var customer = await _db.Customers.FindAsync(customerId);
             if (customer != null)
             {

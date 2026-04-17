@@ -14,7 +14,15 @@ namespace RoyalBank.Repositories
             await _db.KycDocuments.Where(k => k.CustomerId == customerId).OrderByDescending(k => k.UploadedAt).ToListAsync();
         public async Task<List<KycDocument>> GetAllAsync() =>
             await _db.KycDocuments.Include(k => k.Customer).OrderByDescending(k => k.UploadedAt).ToListAsync();
-        public async Task AddAsync(KycDocument d) { await _db.KycDocuments.AddAsync(d); await _db.SaveChangesAsync(); }
-        public async Task UpdateAsync(KycDocument d) { _db.KycDocuments.Update(d); await _db.SaveChangesAsync(); }
+        public async Task AddAsync(KycDocument d) 
+        { 
+            await _db.KycDocuments.AddAsync(d); 
+            await _db.SaveChangesAsync(); 
+        }
+        public async Task UpdateAsync(KycDocument d) 
+        { 
+            _db.KycDocuments.Update(d); 
+            await _db.SaveChangesAsync(); 
+        }
     }
 }

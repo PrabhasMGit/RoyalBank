@@ -16,9 +16,14 @@ namespace RoyalBank.Controllers
             _kycService     = kycService;
         }
 
-        private int  GetCustomerId() => HttpContext.Session.GetInt32("CustomerId") ?? 0;
-        private bool IsCustomer()    => HttpContext.Session.GetString("UserRole") == "Customer";
-
+        private int GetCustomerId()
+        {
+            return HttpContext.Session.GetInt32("CustomerId") ?? 0;
+        }
+        private bool IsCustomer()
+        {
+            return HttpContext.Session.GetString("UserRole") == "Customer";
+        }
         public async Task<IActionResult> CreateAccount()
         {
             if (!IsCustomer()) return RedirectToAction("Login", "Home");
@@ -31,7 +36,6 @@ namespace RoyalBank.Controllers
                 return RedirectToAction("Dashboard", "Customer");
             }
 
-            
             var allAccounts = await _accountService.GetAllAccounts();
             var myAccounts  = allAccounts.Where(a => a.CustomerId == GetCustomerId()).ToList();
 
@@ -50,7 +54,7 @@ namespace RoyalBank.Controllers
             return View(new CreateAccountViewModel());
         }
 
-        // POST /Account/CreateAccount
+        //CreateAccount
         [HttpPost]
         public async Task<IActionResult> CreateAccount(CreateAccountViewModel model)
         {

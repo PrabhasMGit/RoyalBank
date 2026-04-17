@@ -3,7 +3,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RoyalBank.Models
 {
-    public enum RiskLevel { LOW, MEDIUM, HIGH }
+    public enum RiskLevel 
+    { 
+        LOW, MEDIUM, HIGH 
+    }
 
     public class RiskProfile
     {

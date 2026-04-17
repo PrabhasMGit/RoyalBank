@@ -37,11 +37,10 @@
                                 @if (log.Customer != null)
                                 {
                                     <strong>@log.Customer.FullName</strong>
-                                    <br /><small class="text-muted">@log.Customer.Email</small>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-dark">System / Admin</span>
+                                    <strong>Admin</strong>
                                 }
                             </td>
                             <td>@log.Action</td>

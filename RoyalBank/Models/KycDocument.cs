@@ -3,7 +3,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RoyalBank.Models
 {
-    public enum VerificationStatus { PENDING, VERIFIED, REJECTED }
+    public enum VerificationStatus 
+    { 
+        PENDING, VERIFIED, REJECTED 
+    }
 
     public class KycDocument
     {

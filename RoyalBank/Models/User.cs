@@ -2,7 +2,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RoyalBank.Models
 {
-    public enum UserRole { Admin, Compliance, KYC, Customer }
+    public enum UserRole 
+    { 
+        Admin, Compliance, KYC, Customer 
+    }
 
     public class User
     {

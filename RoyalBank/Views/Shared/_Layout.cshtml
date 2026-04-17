@@ -25,30 +25,30 @@
 
                     @if (Context.Session.GetString("UserRole") == "Admin")
                     {
-                        <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Dashboard">Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="CreateOfficer">Create Officer</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="OfficersList">Officers</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="CustomersList">Customers</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="AccountsList">Accounts</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="AuditRecord">Audit Records</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Dashboard"><strong>Dashboard</strong></a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="CreateOfficer"><strong>Create Officer</strong></a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="OfficersList"><strong>Officers</strong></a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="CustomersList"><strong>Customers</strong></a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="AccountsList"><strong>Accounts</strong></a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="AuditRecord"><strong>Audit Records</strong></a></li>
                     }
 
                     @if (Context.Session.GetString("UserRole") == "Customer")
                     {
-                        <li class="nav-item"><a class="nav-link" asp-controller="Customer" asp-action="Dashboard">Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Customer" asp-action="UploadDocument">Upload Document</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="CreateAccount">Create Account</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Customer" asp-action="UpdateProfile">Update Profile</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Customer" asp-action="Dashboard"><strong>Dashboard</strong></a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Customer" asp-action="UploadDocument"><strong>Upload Document</strong></a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="CreateAccount"><strong>Create Account</strong></a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Customer" asp-action="UpdateProfile"><strong>Update Profile</strong></a></li>
                     }
 
                     @if (Context.Session.GetString("UserRole") == "KYC")
                     {
-                        <li class="nav-item"><a class="nav-link" asp-controller="KycOfficer" asp-action="Dashboard">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="KycOfficer" asp-action="Dashboard"><strong>Dashboard</strong></a></li>
                     }
 
                     @if (Context.Session.GetString("UserRole") == "Compliance")
                     {
-                        <li class="nav-item"><a class="nav-link" asp-controller="ComplianceOfficer" asp-action="Dashboard">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="ComplianceOfficer" asp-action="Dashboard"><strong>Dashboard</strong></a></li>
                     }
 
                 </ul>

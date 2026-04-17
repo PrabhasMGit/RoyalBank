@@ -19,10 +19,14 @@ namespace RoyalBank.Controllers
             _complianceService = complianceService;
         }
 
-        private bool   IsAdmin()    => HttpContext.Session.GetString("UserRole") == "Admin";
-        private string AdminEmail() => HttpContext.Session.GetString("UserEmail") ?? "Admin";
-
-       
+        private bool IsAdmin()
+        {
+            return HttpContext.Session.GetString("UserRole") == "Admin";
+        }
+        private string AdminEmail()
+        {
+            return HttpContext.Session.GetString("UserEmail") ?? "Admin";
+        }
         public async Task<IActionResult> Dashboard()
         {
             if (!IsAdmin()) return RedirectToAction("Login", "Home");
@@ -42,14 +46,14 @@ namespace RoyalBank.Controllers
             });
         }
 
-        // GET /Admin/CreateOfficer
+        //CreateOfficer
+        [HttpGet]
         public IActionResult CreateOfficer()
         {
             if (!IsAdmin()) return RedirectToAction("Login", "Home");
             return View(new CreateOfficerViewModel());
         }
 
-        // POST /Admin/CreateOfficer
         [HttpPost]
         public async Task<IActionResult> CreateOfficer(CreateOfficerViewModel model)
         {
@@ -73,14 +77,15 @@ namespace RoyalBank.Controllers
             return RedirectToAction("OfficersList");
         }
 
-        // GET /Admin/OfficersList
+        //OfficersList
+        [HttpGet]
         public async Task<IActionResult> OfficersList()
         {
             if (!IsAdmin()) return RedirectToAction("Login", "Home");
             return View(await _adminService.GetAllOfficers());
         }
 
-        // POST /Admin/DeleteOfficer
+        //DeleteOfficer
         [HttpPost]
         public async Task<IActionResult> DeleteOfficer(int id)
         {
@@ -92,14 +97,15 @@ namespace RoyalBank.Controllers
             return RedirectToAction("OfficersList");
         }
 
-        // GET /Admin/CustomersList
+        //CustomersList
+        [HttpGet]
         public async Task<IActionResult> CustomersList()
         {
             if (!IsAdmin()) return RedirectToAction("Login", "Home");
             return View(await _adminService.GetAllCustomers());
         }
 
-        // POST /Admin/DeleteCustomer
+        //DeleteCustomer
         [HttpPost]
         public async Task<IActionResult> DeleteCustomer(int id)
         {
@@ -111,14 +117,15 @@ namespace RoyalBank.Controllers
             return RedirectToAction("CustomersList");
         }
 
-        // GET /Admin/AccountsList
+        //AccountsList
+        [HttpGet]
         public async Task<IActionResult> AccountsList()
         {
             if (!IsAdmin()) return RedirectToAction("Login", "Home");
             return View(await _accountService.GetAllAccounts());
         }
 
-        // POST /Admin/DeactivateAccount
+        //DeactivateAccount
         [HttpPost]
         public async Task<IActionResult> DeactivateAccount(int id)
         {
@@ -128,7 +135,8 @@ namespace RoyalBank.Controllers
             return RedirectToAction("AccountsList");
         }
 
-        // GET /Admin/AuditRecord
+        //AuditRecord
+        [HttpGet]
         public async Task<IActionResult> AuditRecord()
         {
             if (!IsAdmin()) return RedirectToAction("Login", "Home");

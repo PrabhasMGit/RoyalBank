@@ -8,7 +8,10 @@ namespace RoyalBank.Repositories
     public class ComplianceRepository : IComplianceRepository
     {
         private readonly AppDbContext _db;
-        public ComplianceRepository(AppDbContext db) { _db = db; }
+        public ComplianceRepository(AppDbContext db) 
+        { 
+            _db = db; 
+        }
 
         public async Task AddAuditLogAsync(AuditLog log)
         {

@@ -19,13 +19,15 @@ namespace RoyalBank.Services
             var customer = await _customerRepo.GetByIdAsync(customerId) ?? throw new Exception("Customer not found");
 
             int age = DateTime.Today.Year - customer.DateOfBirth.Year;
-            if (customer.DateOfBirth.Date > DateTime.Today.AddYears(-age)) age--;
-
+            if (customer.DateOfBirth.Date > DateTime.Today.AddYears(-age))
+            {
+                age--;
+            }
             int score = 0;
             // Income scoring
-            if (customer.Income < 200000) score += 40;
-            else if (customer.Income < 500000) score += 25;
-            else if (customer.Income < 1000000) score += 15;
+            if (customer.Income < 20000) score += 40;
+            else if (customer.Income < 50000) score += 25;
+            else if (customer.Income < 100000) score += 15;
             else score += 5;
             // Age scoring
             if (age < 25) score += 30;

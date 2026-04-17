@@ -3,7 +3,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RoyalBank.Models
 {
-    public enum OnboardingStatus { NEW, IN_PROGRESS, COMPLETED }
+    public enum OnboardingStatus 
+    { 
+        NEW, IN_PROGRESS, COMPLETED 
+    }
 
     public class Customer
     {
@@ -18,6 +21,7 @@ namespace RoyalBank.Models
 
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Enter a valid email address")]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@gmail\.com$",ErrorMessage ="Please Provide valid gmail address")]
         [StringLength(100)]
         public string Email { get; set; } = string.Empty;
 
@@ -36,8 +40,8 @@ namespace RoyalBank.Models
         public DateTime DateOfBirth { get; set; }
 
         [Required(ErrorMessage = "Income is required")]
-        [Range(1000, 100000000, ErrorMessage = "Income must be between Rs.1,000 and Rs.10,00,00,000")]
-        [Column(TypeName = "decimal(18,2)")]
+        [Range(1000, 1000000, ErrorMessage = "Income must be between Rs.1,000 and Rs.10,00,000")]
+        [Column(TypeName = "decimal(10,2)")]
         [Display(Name = "Annual Income (Rs.)")]
         public decimal Income { get; set; }
 
