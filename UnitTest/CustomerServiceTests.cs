@@ -37,7 +37,7 @@ namespace RoyalBank.Tests
 			var model = new RegisterViewModel
 			{
 				FullName = "John kumar",           // Valid: Letters only
-				Email = "john.kumar@gmail.com",  // Valid: Correct format
+				Email = "john.kumar@example.com",  // Valid: Correct format
 				MobileNumber = "9876543210",       // Valid: Starts with 9, 10 digits
 				Address = "123 Royal Bank Street, Chennai", // Valid: > 10 chars
 				Income = 60000,                    // Valid: > 1000
