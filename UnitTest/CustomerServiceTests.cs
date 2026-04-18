@@ -40,7 +40,7 @@ namespace RoyalBank.Tests
 				Email = "john.kumar@gmail.com",  // Valid: Correct format
 				MobileNumber = "9876543210",       // Valid: Starts with 9, 10 digits
 				Address = "123 Royal Bank Street, Chennai", // Valid: > 10 chars
-				Income = 50000,                    // Valid: > 1000
+				Income = 60000,                    // Valid: > 1000
 				DateOfBirth = new DateTime(1995, 1, 1)
 			};
 
